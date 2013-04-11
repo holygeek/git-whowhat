@@ -1,0 +1,17 @@
+NAME
+	git-whowhat - Show authors and the files that they modified.
+
+SYNOPSIS
+	git whowhat [<options>] [<since>..<until> [[--] <path>...]
+
+OPTIONS
+	-d
+	    Print debugging information
+
+	-h
+	    Show this help message
+
+	[<since>..<until> [[--] <path>...]
+	    These are the same argument understood by git log
+
+	    If none is specified, "ORIG_HEAD.." is used as the sole argument

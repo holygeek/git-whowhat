@@ -4,10 +4,9 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"io"
+	"github.com/holygeek/piper"
 	"log"
 	"os"
-	"os/exec"
 	"sort"
 	"strings"
 )
@@ -82,41 +81,21 @@ func main() {
 	}
 }
 
-func stdoutScanner(cmd *exec.Cmd) (*bufio.Scanner, io.ReadCloser) {
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		die(err)
-	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		die(err)
-	}
-	return bufio.NewScanner(stdout), stderr
-}
-
 func runGitLog(debug *bool) *bufio.Scanner {
 	gitargs := setupGitLogArgs()
-
-	cmd := exec.Command("git", gitargs...)
 	if *debug {
-		fmt.Println(strings.Join(cmd.Args, " "))
+		fmt.Println("git", strings.Join(gitargs, " "))
 	}
 
-	lineScanner, stderr := stdoutScanner(cmd)
-
-	err := cmd.Start()
-	if err != nil {
-		die("Error running git:", err)
-	}
+	stdout, stderr := piper.MustPipe("git", gitargs...)
 
 	go func() {
-		_, err := io.Copy(os.Stderr, stderr)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+		for stderr.Scan() {
+			fmt.Fprintln(os.Stderr, stderr.Text())
 		}
 	}()
 
-	return lineScanner
+	return stdout
 }
 
 func setupGitLogArgs() []string {

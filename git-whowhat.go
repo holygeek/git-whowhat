@@ -67,17 +67,20 @@ func main() {
 		}
 	}
 
-	l := len(authorsAndFiles)
-	c := 0
-	for authors, files := range authorsAndFiles {
-		c++
+	//l := len(authorsAndFiles)
+	sortedAuthors := make([]string, len(authorsAndFiles))
+	i := 0
+	for authors, _ := range authorsAndFiles {
+		sortedAuthors[i] = authors
+		i++
+	}
+	sort.Strings(sortedAuthors)
+	for _, authors := range sortedAuthors {
+		files := authorsAndFiles[authors]
 		fmt.Print(strings.Replace(authors, ",", "\n", -1))
 		fmt.Print("\n\t")
 		sort.Strings(files)
 		fmt.Println(strings.Join(files, "\n\t"))
-		if c < l {
-			fmt.Println()
-		}
 	}
 }
 

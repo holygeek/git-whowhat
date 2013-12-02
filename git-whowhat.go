@@ -90,7 +90,7 @@ func runGitLog(debug *bool) *bufio.Scanner {
 		fmt.Println("git", strings.Join(gitargs, " "))
 	}
 
-	stdout, stderr := piper.MustPipe("git", gitargs...)
+	_, stdout, stderr := piper.MustPipe("git", gitargs...)
 
 	go func() {
 		for stderr.Scan() {
